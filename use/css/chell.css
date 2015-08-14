@@ -1,0 +1,10 @@
+html { box-sizing: border-box } *, *::before, *::after { box-sizing: inherit }
+
+html, body, #terminal { height: 320px; width: 480px; margin: 0 }
+
+body { font: 100%/1.4 monospace; }
+
+.ace_content {
+	padding: 1em;
+}
+
