@@ -113,7 +113,7 @@
 		
 		this.pressed('up')((function (evt) {
 			var history = this.history.slice();
-			if (count > history.length)
+			if ((count+1) > (history.length))
 				count = 0;
 			var index = history.length - (++count);
 			
