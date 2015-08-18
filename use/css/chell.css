@@ -10,6 +10,7 @@ body { font: 100%/1.4 monospace; }
 	outline: none;
 	font-size: 1.5em;
 	padding: 1.5em;
+	word-break: break-all;
 }
 
 	.am { outline: 0 }

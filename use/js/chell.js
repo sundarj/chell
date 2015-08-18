@@ -44,14 +44,21 @@
 		chrome[command[0]][command[1]].apply(chrome, arguments);
 	}
 	
+	Chell.prototype.evaluate = function (command) {
+		document.getElementById('eval').contentWindow.postMessage({
+			code: command
+		}, '*');
+	};
+	
 	Chell.prototype.output = function (command) {
 		var self = this;
 		var output = this.newline('output');
-		output.innerHTML = 'doing something...';
-		setTimeout(function () {
-			output.innerHTML += '<br>done';
+		this.evaluate(command);
+		window.onmessage = function (evt) {
+			output.innerHTML = evt.data.result;
 			self.input();
-		}, 1000);
+		};
+		
 	}
 	
 	Chell.prototype.input = function () {
@@ -64,7 +71,19 @@
 	
 	Chell.prototype.start = function () {
 		document.body.appendChild(this.fragment);
-		this.newline('input');
+		this.input();
+		
+		this.pressed('enter')(function (evt) {
+			var self = evt.target;
+			
+			self.textContent = trim(self.textContent);
+	
+			if (!self.textContent.length) {
+				chell.input();
+			} else {
+				chell.output(self.textContent);
+			}
+		});
 	}
 	
 	Chell.prototype.pressed = function (key) {
@@ -75,11 +94,11 @@
 		if (!!key) {
 			return (function (callback) {
 				console.log(this.terminal);
-				this.terminal.addEventListener('keydown', function (e) {
-					if (e.which === key) {
-						callback.call(e, e);
-						e.preventDefault();
-						e.stopPropagation();
+				this.terminal.addEventListener('keydown', function (evt) {
+					if (evt.which === key) {
+						callback.call(evt, evt);
+						evt.preventDefault();
+						evt.stopPropagation();
 					}
 				});
 			}).bind(this);
@@ -92,16 +111,5 @@
 	
 	var chell = window.Chell = new Chell;
 	chell.start();
-	
-	chell.pressed('enter')(function (e) {
-		var self = e.target;
-
-		if (!trim(self.textContent).length) {
-			chell.input();
-		} else {
-			chell.output(self.textContent);
-		}
-	
-	});
 	
 })(this, document);

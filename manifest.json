@@ -14,7 +14,9 @@
         "tabs",
         "bookmarks",
         "clipboardWrite"
-    ]
+    ],
     
-    
+    "sandbox": {
+        "pages": ["eval.html"]
+    }
 }

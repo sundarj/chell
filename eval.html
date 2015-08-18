@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<title>Chell JS evaluator</title>
+<script>
+	window.onmessage = function(evt) {
+		var result = eval(evt.data.code);
+		evt.source.postMessage({
+			result: result
+		}, '*');
+	}
+</script>
