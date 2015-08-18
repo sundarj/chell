@@ -1,6 +1,6 @@
 html { box-sizing: border-box } *, *::before, *::after { box-sizing: inherit }
 
-html, body, .terminal { height: 320px; width: 480px; margin: 0 }
+html, body, .terminal { height: 320px; width: 480px; margin: 0; max-height: 320px; overflow: auto }
 
 body { font: 100%/1.4 monospace; }
 
@@ -12,5 +12,6 @@ body { font: 100%/1.4 monospace; }
 	padding: 1.5em;
 }
 
-	.line { outline: 0 }
+	.am { outline: 0 }
+	.input::before { content: ': ' }
 
