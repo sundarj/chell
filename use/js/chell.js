@@ -9,8 +9,7 @@
 		Object.keys(attrs).forEach(function (key) {
 			element[key] = attrs[key];
 		});
-		Chell.prototype.fragment.appendChild(element);
-		return element;
+		return Chell.prototype.fragment.appendChild(element);
 	}
 	
 	Chell.prototype.terminal = create('div', {
@@ -44,56 +43,47 @@
 		chrome[command[0]][command[1]].apply(chrome, arguments);
 	}
 	
-	Chell.prototype.evaluate = function (command) {
+	Chell.prototype.eval = function (command) {
 		document.getElementById('eval').contentWindow.postMessage({
 			code: command
 		}, '*');
 	};
 	
+	Chell.prototype.commands = ['tabs', 'bookmarks'];
+	
 	Chell.prototype.output = function (command) {
 		var self = this;
 		var output = this.newline('output');
-		this.evaluate(command);
-		window.onmessage = function (evt) {
-			output.innerHTML = evt.data.result;
-			self.input();
-		};
-		
+		if (~this.commands.indexOf(command.split('.')[0])) {
+			this.exec(command, {}, function (result) {
+				output.innerHTML = JSON.stringify(result, null, 2);
+			});
+		} else {
+			this.eval(command);
+			window.onmessage = function (evt) {
+				output.innerHTML = evt.data.result;
+				if (evt.data.error)
+					output.classList.add('error');
+				self.input();
+			};
+		}
 	}
 	
-	Chell.prototype.input = function () {
+	Chell.prototype.input = function() {
 		[].forEach.call(this.terminal.querySelectorAll('.input'), function (line) {
-			console.log(line);
 			line.contentEditable = false;
 		});
 		this.newline('input');
 	}
 	
-	Chell.prototype.start = function () {
-		document.body.appendChild(this.fragment);
-		this.input();
-		
-		this.pressed('enter')(function (evt) {
-			var self = evt.target;
-			
-			self.textContent = trim(self.textContent);
-	
-			if (!self.textContent.length) {
-				chell.input();
-			} else {
-				chell.output(self.textContent);
-			}
-		});
-	}
-	
 	Chell.prototype.pressed = function (key) {
 		var keys = {
-			enter: 13
+			enter: 13,
+			up: 38
 		}
 		key = keys[key];
 		if (!!key) {
 			return (function (callback) {
-				console.log(this.terminal);
 				this.terminal.addEventListener('keydown', function (evt) {
 					if (evt.which === key) {
 						callback.call(evt, evt);
@@ -103,6 +93,36 @@
 				});
 			}).bind(this);
 		}
+	}
+	
+	Chell.prototype.start = function () {
+		document.body.appendChild(this.fragment);
+		this.input();
+		
+		this.pressed('enter')((function (evt) {
+			var cmd = trim(evt.target.textContent);
+			this.history.push(cmd);
+	
+			if (!cmd.length)
+				this.input();
+			else
+				this.output(cmd);
+		}).bind(this));
+		
+		var count = 0;
+		
+		this.pressed('up')((function (evt) {
+			var history = this.history.slice();
+			if (count > history.length)
+				count = 0;
+			var index = history.length - (++count);
+			
+			console.log(index, count, history.length);
+			
+			evt.target.textContent = history[index];
+			evt.target.focus();
+			focus(evt.target);
+		}).bind(this));
 	}
 	
 	function trim(str) { 

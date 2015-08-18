@@ -3,9 +3,17 @@
 <title>Chell JS evaluator</title>
 <script>
 	window.onmessage = function(evt) {
-		var result = eval(evt.data.code);
+		var result, error = false;
+		try {
+			result = eval(evt.data.code);
+		} catch(e) {
+			result = e.message;
+			error = true;
+		}
+		
 		evt.source.postMessage({
-			result: result
+			result: result,
+			error: error
 		}, '*');
 	}
 </script>

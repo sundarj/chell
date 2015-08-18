@@ -13,10 +13,15 @@
     "permissions": [
         "tabs",
         "bookmarks",
-        "clipboardWrite"
+        "clipboardWrite",
+        "contextMenus"
     ],
     
     "sandbox": {
         "pages": ["eval.html"]
+    },
+    
+    "background": {
+        "scripts": ["use/js/background.js"]
     }
 }

@@ -8,11 +8,18 @@ body { font: 100%/1.4 monospace; }
 	border: 0;
 	resize: none;
 	outline: none;
-	font-size: 1.5em;
-	padding: 1.5em;
+	font-size: 1.2em;
+	padding: 1.2em;
 	word-break: break-all;
 }
 
 	.am { outline: 0 }
-	.input::before { content: ': ' }
-
+	.input::before {
+		content: ': ';
+		color: #999;
+	}
+	.output {
+		color: #006ed9;
+		white-space: pre-wrap;
+	}
+		.error { color: #d00 }
