@@ -17,9 +17,10 @@
 	});
 	
 	function focus(elt) {
+		elt.focus();
 		var sel = window.getSelection();
 		var range = document.createRange();
-		range.setStartAfter(elt);
+		range.setStartAfter(elt.appendChild(document.createTextNode("\u200B")));
 		range.collapse(true);
 		sel.removeAllRanges();
 		sel.addRange(range);
@@ -31,8 +32,7 @@
 			contentEditable: (type === 'input')
 		}));
 		if (type === 'input') {
-			self.focus();
-			focus(self.appendChild(document.createTextNode("\u200B")));
+			focus(self);
 		}
 		return self;
 	}
@@ -49,15 +49,24 @@
 		}, '*');
 	};
 	
-	Chell.prototype.commands = ['tabs', 'bookmarks'];
+	Chell.prototype.commands = {
+		'tabs': function (output) {
+			this.exec('tabs.query', {}, function (result) {
+				output.innerHTML = result.map(function (i) {
+					return "url\ntitle".replace(/(url|title)/g, function(match) {
+						return i[match];
+					});
+				}).join("\n\n");
+			});
+		}
+	};
 	
 	Chell.prototype.output = function (command) {
 		var self = this;
 		var output = this.newline('output');
-		if (~this.commands.indexOf(command.split('.')[0])) {
-			this.exec(command, {}, function (result) {
-				output.innerHTML = JSON.stringify(result, null, 2);
-			});
+		if (this.commands.hasOwnProperty(command)) {
+			this.commands[command].call(this, output);
+			this.input();
 		} else {
 			this.eval(command);
 			window.onmessage = function (evt) {
@@ -95,13 +104,17 @@
 		}
 	}
 	
+	function trim(str) { 
+		return str.replace(/^\s+|\s+$/g, '').replace(/\u200B/g, '');
+	};
+	
 	Chell.prototype.start = function () {
 		document.body.appendChild(this.fragment);
 		this.input();
 		
 		this.pressed('enter')((function (evt) {
 			var cmd = trim(evt.target.textContent);
-			this.history.push(cmd);
+			this.history.push(evt.target.textContent);
 	
 			if (!cmd.length)
 				this.input();
@@ -117,17 +130,10 @@
 				count = 0;
 			var index = history.length - (++count);
 			
-			console.log(index, count, history.length);
-			
-			evt.target.textContent = history[index];
-			evt.target.focus();
 			focus(evt.target);
+			evt.target.textContent = history[index];
 		}).bind(this));
 	}
-	
-	function trim(str) { 
-		return str.replace(/^\s+|\s+$/g, '').replace(/\u200B/g, '');
-	};
 	
 	var chell = window.Chell = new Chell;
 	chell.start();
