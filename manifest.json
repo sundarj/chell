@@ -3,7 +3,6 @@
     "name": "chell",
     "description": "Chrome shell",
     "version": "0.0",
-    "todo": "wk reviews, yt open MZ2",
     
     "browser_action": {
         "default_icon": "i/icon.png",
