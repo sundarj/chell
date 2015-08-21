@@ -25,7 +25,7 @@ Additionally, appending "copy" to the command will copy it to the clipboard.
 
 TTS
 
-Typing the command "speak <language> <text>" will initiate the Chrome TTS for the specified language and text.
+Typing the command "speak <text> <lang:language>" will initiate the Chrome TTS for the specified language and text. If no language is specified, the language will be en-GB.
 
 
 
