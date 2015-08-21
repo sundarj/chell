@@ -50,22 +50,77 @@
 	};
 	
 	Chell.prototype.commands = {
-		'tabs': function (output) {
+		
+		tabs: function (command, output) {
+			var words = command.split(" "), urlonly, copy;
+			if (words.length > 1) {
+				urlonly = ~words.indexOf("url");
+				copy = ~words.indexOf("copy");
+			}
 			this.exec('tabs.query', {}, function (result) {
 				output.innerHTML = result.map(function (i) {
-					return "url\ntitle".replace(/(url|title)/g, function(match) {
+					var pattern = "url\ntitle";
+					if (urlonly)
+						pattern = "url"
+					return pattern.replace(/(url|title)/g, function(match) {
 						return i[match];
 					});
 				}).join("\n\n");
+				
+				if (copy) {
+					var range = document.createRange();
+					range.selectNode(output);
+					var sel = window.getSelection();
+					sel.removeAllRanges();
+					sel.addRange(range);
+					document.execCommand('copy', false, null);
+					sel.removeAllRanges();
+				}
+			});
+		},
+		
+		speak: function (command, output) {
+			var words = command.split(/\s/g), lang, text;
+			console.log(words);
+			if (words.length > 1) {
+				lang = words.join(" ").split(" lang:");
+				lang = (lang && lang[1]) || 'en-GB';
+				text = words.slice(1).join(" ").replace(" lang:" + lang, '');
+			}
+			var shortcuts = {
+				"us": "en-US",
+				"ja": "ja-JP",
+				"zh": "zh-CN",
+				"cn": "zh-CN",
+				"gr": "el",
+				"ca": "en-CA",
+				"ie": "en-IE",
+				"gb": "en-GB",
+				"de": "de-DE",
+				"fr": "fr-FR",
+				"no": "no-NOspeak a"
+			}
+			
+			if (shortcuts.hasOwnProperty(lang)) {
+				lang = shortcuts[lang];
+			}
+			
+			console.log(text, lang);
+			
+			chrome.tts.speak(text, {
+				lang: lang
 			});
 		}
+		
 	};
 	
 	Chell.prototype.output = function (command) {
 		var self = this;
 		var output = this.newline('output');
-		if (this.commands.hasOwnProperty(command)) {
-			this.commands[command].call(this, output);
+		
+		var commandname = command.split(/\s/g)[0];
+		if (this.commands.hasOwnProperty(commandname)) {
+			this.commands[commandname].call(this, command, output);
 			this.input();
 		} else {
 			this.eval(command);

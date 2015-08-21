@@ -1,0 +1,53 @@
+
+Chell - functional specification
+
+Chell is a Chrome extension that interfaces with the Chrome Extension API, in the form of a command line. It will allow commands to be typed in an executed, which return parsed responsed from the API (it is a wrapper).
+
+The default method of interacting with this Extension will be via a popup initiated by clicking the Extension's button, although right-clicking or middle-clicking the button will allow you to open the full terminal in a new tab. The Extension is also able to be opened b using the keyboard shortcut Ctrl+Shift+C
+
+If no Chrome Extension API or Other command is found, the input will be evaluated as JavaScript.
+
+
+
+Chrome Extension API
+
+
+Tabs
+
+Typing the command "tabs" will list out all of the open tabs, in the form
+
+URL
+Title
+
+If only the URLs are wanted, then typing "tabs url" will return only that field.
+Additionally, appending "copy" to the command will copy it to the clipboard.
+
+
+TTS
+
+Typing the command "speak <language> <text>" will initiate the Chrome TTS for the specified language and text.
+
+
+
+Other
+
+
+In addition to the Chrome API commands, there will also be site-specific commands that will interface with their APIs/websites.
+
+WaniKani
+
+Typing "wk open" will open the WaniKani website in a new tab.
+Typing "wk key <api_key>" will store the API key for later use.
+Typing "wk reviews" will list out the number of reviews the user has.
+
+
+YouTube
+
+Typing "yt open" will open the YouTube website in a new tab.
+Typing "yt playlist <playlist_name>" will open out that playlist in a new tab.
+
+
+Jisho
+
+Typing "jisho open" will open the jisho website in a new tab.
+Typing "jisho search dream" will print out the first result of that search.
