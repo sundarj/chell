@@ -110,6 +110,38 @@
 			chrome.tts.speak(text, {
 				lang: lang
 			});
+		},
+		
+		"wk": function (command, output) {
+			var words = command.split(" ").slice(1);
+			console.log(command.split(" ").slice(1));
+			if (words[0] === 'key') {
+				if (!words[1]) {
+					output.innerHTML = 'Please enter an API key';
+					output.classList.add('error');
+				}
+				chrome.storage.sync.set({
+					'chell-wk-api-key': words[1]
+				});
+			} else if (words[0] === 'reviews') {
+				chrome.storage.sync.get('chell-wk-api-key', function (store) {
+					var key = store['chell-wk-api-key'];
+					console.log(key, store);
+					if (!!key) {
+						var http = new XMLHttpRequest();
+						http.open("get", `https://www.wanikani.com/api/user/${key}/study-queue`);
+						http.onreadystatechange = function (evt) {
+							if (http.readyState === 4 && http.status === 200) {
+								output.innerHTML = JSON.parse(http.responseText).requested_information.reviews_available;
+							}
+						}
+						http.send();
+					} else {
+						output.innerHTML = 'No API key found'
+						output.classList.add('error');
+					}
+				});
+			}
 		}
 		
 	};

@@ -15,7 +15,9 @@
         "clipboardWrite",
         "contextMenus",
         "tts",
-        "commands"
+        "commands",
+        "storage",
+        "https://www.wanikani.com/api/*"
     ],
     
     "sandbox": {
