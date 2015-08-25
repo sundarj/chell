@@ -36,14 +36,12 @@ In addition to the Chrome API commands, there will also be site-specific command
 
 WaniKani
 
-Typing "wk open" will open the WaniKani website in a new tab.
 Typing "wk key <api_key>" will store the API key for later use.
 Typing "wk reviews" will list out the number of reviews the user has.
 
 
 YouTube
 
-Typing "yt open" will open the YouTube website in a new tab.
 Typing "yt playlist <playlist_name>" will open out that playlist in a new tab.
 
 

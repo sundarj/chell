@@ -13,6 +13,7 @@
     "permissions": [
         "tabs",
         "clipboardWrite",
+        "clipboardRead",
         "contextMenus",
         "tts",
         "commands",
