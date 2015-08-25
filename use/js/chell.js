@@ -143,14 +143,12 @@
 				} else if (words[0] === 'reviews') {
 					
 					if (!!key) {
-						var http = new XMLHttpRequest();
-						http.open("get", `https://www.wanikani.com/api/user/${key}/study-queue`);
-						http.onreadystatechange = function (evt) {
-							if (http.readyState === 4 && http.status === 200) {
-								output.innerHTML = JSON.parse(http.responseText).requested_information.reviews_available;
-							}
-						}
-						http.send();
+						fetch(`https://www.wanikani.com/api/user/${key}/study-queue`)
+							.then(function (res) {
+								return res.json();
+							}).then(function (parsed) {
+								output.innerHTML = parsed.requested_information.reviews_available;
+							});
 					} else {
 						output.innerHTML = 'No API key found'
 						output.classList.add('error');
@@ -251,7 +249,5 @@
 	
 	var chell = window.Chell = new Chell;
 	chell.start();
-	
-	
 	
 })(this, document);

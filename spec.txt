@@ -44,8 +44,3 @@ YouTube
 
 Typing "yt playlist <playlist_name>" will open out that playlist in a new tab.
 
-
-Jisho
-
-Typing "jisho open" will open the jisho website in a new tab.
-Typing "jisho search dream" will print out the first result of that search.
